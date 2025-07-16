@@ -1,0 +1,55 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.signin-page {
+  background: linear-gradient(to right, #a50044, #004d98);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.signin-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(to right, #a50044, #004d98);
+}
+
+.signin-image {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signin-image img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.signin-form {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ✅ Hide the image on small viewports (like 768px or less) */
+@media (max-width: 768px) {
+  .signin-image {
+    display: none;
+  }
+
+  .signin-form {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .signin-container {
+    justify-content: center;
+    align-items: center;
+  }
+}

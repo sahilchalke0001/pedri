@@ -1,0 +1,21 @@
+.barca-footer {
+  background: linear-gradient(135deg, #a50044 0%, #004d98 100%);
+  color: #ffffff;
+  padding: 20px 30px;
+  text-align: center;
+  font-family: "Segoe UI", sans-serif;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.footer-content p {
+  margin: 5px 0;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.footer-content p:last-child {
+  font-weight: 600;
+  color: #fdb913; /* Barça gold */
+}

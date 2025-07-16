@@ -1,0 +1,48 @@
+/* Global styles for the body */
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif; /* Using Inter font as per guidelines */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Styles for the main application container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure the container takes full viewport height */
+  width: 100vw; /* Ensure the container takes full viewport width */
+}
+
+/* Styles for the main chatbot content area */
+.chatbot-main-content {
+  flex-grow: 1; /* Allow main content to take up remaining space */
+  padding: 30px 20px; /* Increased padding */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f9fa; /* Lighter grey background for the main content area */
+  color: #333;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  margin-top: -15px; /* Overlap slightly with header for a continuous look */
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1); /* Shadow at the top of content */
+}
+
+/* Responsive adjustments for smaller screens for the main content */
+@media (max-width: 768px) {
+  .chatbot-main-content {
+    padding: 20px 15px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    margin-top: -10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chatbot-main-content {
+    padding: 15px 10px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    margin-top: -8px;
+  }
+}
