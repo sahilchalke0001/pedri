@@ -71,7 +71,7 @@
   text-align: right;
 }
 
-.chat-message.bot {
+.chat-message.model {
   background-color: #a50044; /* Barça Garnet */
   color: white;
   margin-right: auto;

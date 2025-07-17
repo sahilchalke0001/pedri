@@ -11,8 +11,9 @@ const Hero = () => {
   const [loading, setLoading] = useState(false);
   const [chat, setChat] = useState(null);
   const [showChat, setShowChat] = useState(false);
-  const { isSignedIn } = useUser();
+  const { user, isSignedIn } = useUser();
 
+  // Initialize Gemini Chat
   useEffect(() => {
     const initModel = async () => {
       try {
@@ -46,6 +47,44 @@ const Hero = () => {
     if (isSignedIn) initModel();
   }, [isSignedIn]);
 
+  // Save chat to DB
+  const saveChatToDB = async (messagesArray) => {
+    if (
+      !user ||
+      !user.id ||
+      !Array.isArray(messagesArray) ||
+      messagesArray.length === 0
+    ) {
+      console.warn("⚠️ Invalid user or messages. Skipping DB save.");
+      return;
+    }
+
+    const payload = {
+      clerkUserId: user.id,
+      messages: messagesArray.map((msg) => ({
+        role: msg.role === "model" ? "bot" : msg.role,
+        text: msg.text,
+      })),
+    };
+
+    try {
+      const res = await fetch("http://localhost:5000/api/chats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("❌ Save error:", data);
+      }
+    } catch (err) {
+      console.error("❌ Error saving chat to DB:", err);
+    }
+  };
+
+  // Handle user prompt
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!message.trim() || !chat) return;
@@ -56,17 +95,26 @@ const Hero = () => {
     setMessage("");
     setLoading(true);
 
+    // ✅ Send user message to DB
+    await saveChatToDB([userMessage]);
+
     try {
-      const result = await chat.sendMessage(message);
+      const result = await chat.sendMessage(userMessage.text);
       const response = result.response.text();
-      const botMessage = { role: "bot", text: response };
+      const botMessage = { role: "model", text: response };
+
       setChatLog((prev) => [...prev, botMessage]);
+
+      // ✅ Send bot message to DB
+      await saveChatToDB([userMessage, botMessage]);
     } catch (error) {
       console.error("Gemini Flash error:", error);
-      setChatLog((prev) => [
-        ...prev,
-        { role: "bot", text: "❌ Error getting response. Try again." },
-      ]);
+      const errorMsg = "❌ Error getting response. Try again.";
+      const errorBotMsg = { role: "model", text: errorMsg };
+      setChatLog((prev) => [...prev, errorBotMsg]);
+
+      // ✅ Save error message
+      await saveChatToDB([errorBotMsg]);
     } finally {
       setLoading(false);
     }
@@ -84,7 +132,7 @@ const Hero = () => {
                 <span>{msg.text}</span>
               </div>
             ))}
-            {loading && <div className="chat-message bot">Typing...</div>}
+            {loading && <div className="chat-message model">Typing...</div>}
           </div>
         )}
       </div>
@@ -104,11 +152,7 @@ const Hero = () => {
       ) : (
         <p
           className="chatbot-login-warning"
-          style={{
-            textAlign: "center",
-            marginTop: "20px",
-            fontWeight: "bold",
-          }}
+          style={{ textAlign: "center", marginTop: "20px", fontWeight: "bold" }}
         >
           🔒 Please{" "}
           <a href="/sign-in" style={{ color: "#2563eb" }}>

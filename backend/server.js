@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const userRoutes = require("./routes/userRoutes");
+const chatRoutes = require("./routes/chatRoutes"); // ✅ Import chatRoutes
 
 dotenv.config();
 
@@ -25,8 +26,9 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB error:", err));
 
-// Use the /api/users route
+// Routes
 app.use("/api/users", userRoutes);
+app.use("/api/chats", chatRoutes); // ✅ Mount chat routes here
 
 // Health check
 app.get("/", (req, res) => {
