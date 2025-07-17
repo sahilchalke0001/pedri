@@ -1,0 +1,140 @@
+.hero-wrapper {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero-heading {
+  font-size: 3rem;
+  text-align: center;
+  margin: 1rem 0;
+  color: #1e40af; /* blue-800 */
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.hero-content.with-chat {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 60px;
+}
+
+.hero-image {
+  display: block;
+  mix-blend-mode: multiply;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+.chat-window {
+  background: linear-gradient(135deg, hsl(207, 70%, 75%), hsl(330, 70%, 75%));
+  padding: 16px;
+  border-radius: 12px;
+  overflow-y: auto;
+  width: 100%;
+  max-width: 600px;
+  max-height: 550px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.chat-window::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+.chat-message {
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  max-width: 80%;
+  font-size: 0.95rem;
+}
+
+.chat-message.user {
+  background-color: #004d98; /* Barça Blue */
+  color: white;
+  margin-left: auto;
+  text-align: right;
+}
+
+.chat-message.bot {
+  background-color: #a50044; /* Barça Garnet */
+  color: white;
+  margin-right: auto;
+  text-align: left;
+}
+
+/* Chatbot Search Bar */
+.chatbot-search-bar {
+  margin: 30px auto 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  max-width: 600px;
+  background: linear-gradient(135deg, #a50044, #004d98);
+  border-radius: 30px;
+  padding: 5px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+.chatbot-search-bar input {
+  flex: 1;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 30px 0 0 30px;
+  outline: none;
+  font-size: 1rem;
+  color: #333;
+}
+
+.chatbot-search-bar button {
+  background: #fcb913; /* Barça Yellow */
+  border: none;
+  padding: 12px 20px;
+  border-radius: 0 30px 30px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.chatbot-search-bar button:hover {
+  background: #ffe34d;
+}
+
+.chatbot-login-warning a {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-content.with-chat {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .chat-window {
+    max-width: 100%;
+    max-height: 400px;
+  }
+
+  .hero-image {
+    max-width: 100%;
+  }
+}
