@@ -9,6 +9,7 @@ from langchain_google_genai import (
     GoogleGenerativeAIEmbeddings,
     ChatGoogleGenerativeAI,
 )
+
 from langchain_chroma import Chroma
 
 
@@ -45,7 +46,7 @@ vectorstore = Chroma(
 
 # ─────────────── Flask app ───────────────
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app)
 
 # ----------------- /api/users -----------------
 @app.post("/api/users")
@@ -138,5 +139,4 @@ Answer:
 
 # ----------------- run -----------------
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=PORT, debug=True)

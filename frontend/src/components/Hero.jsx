@@ -121,7 +121,11 @@ const Hero = () => {
         </form>
       ) : (
         <p className="chatbot-login-warning">
-          🔒 Please <a href="/sign-in">sign in</a> to use the chatbot.
+          🔒 Please{" "}
+          <a href="/sign-in" style={{ color: "#2563eb" }}>
+            sign in
+          </a>{" "}
+          to use the chatbot.
         </p>
       )}
     </div>
