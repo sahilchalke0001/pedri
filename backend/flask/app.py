@@ -45,7 +45,7 @@ vectorstore = Chroma(
 
 # ─────────────── Flask app ───────────────
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # ----------------- /api/users -----------------
 @app.post("/api/users")
