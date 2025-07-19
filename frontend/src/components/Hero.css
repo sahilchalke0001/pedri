@@ -118,8 +118,13 @@
   background: #ffe34d;
 }
 
+.chatbot-login-warning {
+  text-align: center;
+}
+
 .chatbot-login-warning a {
   text-decoration: underline;
+  color: #004d98;
 }
 
 /* Responsive Design */
