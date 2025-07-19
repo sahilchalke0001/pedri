@@ -1,132 +1,101 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
 import HeroImage from "../assets/Hero.jpg";
 import "./Hero.css";
 import { FiSend } from "react-icons/fi";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+
+/** Where the Flask API lives (set Vite env or fallback to localhost:5000) */
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
 
 const Hero = () => {
   const [message, setMessage] = useState("");
   const [chatLog, setChatLog] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [chat, setChat] = useState(null);
   const [showChat, setShowChat] = useState(false);
+  const chatWindowRef = useRef(null);
+
   const { user, isSignedIn } = useUser();
 
-  // Initialize Gemini Chat
+  /* ---------- Auto‑scroll chat window ---------- */
   useEffect(() => {
-    const initModel = async () => {
-      try {
-        const genAI = new GoogleGenerativeAI(
-          import.meta.env.VITE_GOOGLE_API_KEY
-        );
+    if (chatWindowRef.current) {
+      chatWindowRef.current.scrollTo({
+        top: chatWindowRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [chatLog, loading]);
 
-        const model = genAI.getGenerativeModel({
-          model: "models/gemini-1.5-flash",
-        });
-
-        const chatSession = await model.startChat({
-          history: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text: "From now on, act as Pedri González, the Barcelona midfield maestro. You are friendly, knowledgeable, and passionate about football. Answer all questions as Pedri, and keep responses conversational with a Barça flair. Use phrases like 'Visca el Barça!' or 'Vamos!' when appropriate. Now, introduce yourself as Pedri and invite me to ask a question.",
-                },
-              ],
-            },
-          ],
-        });
-
-        setChat(chatSession);
-      } catch (error) {
-        console.error("Model initialization error:", error);
-      }
-    };
-
-    if (isSignedIn) initModel();
-  }, [isSignedIn]);
-
-  // Save chat to DB
+  /* ---------- Persist chat in Mongo ---------- */
   const saveChatToDB = async (messagesArray) => {
-    if (
-      !user ||
-      !user.id ||
-      !Array.isArray(messagesArray) ||
-      messagesArray.length === 0
-    ) {
+    if (!user?.id || !Array.isArray(messagesArray) || !messagesArray.length) {
       console.warn("⚠️ Invalid user or messages. Skipping DB save.");
       return;
     }
 
     const payload = {
       clerkUserId: user.id,
-      messages: messagesArray.map((msg) => ({
-        role: msg.role === "model" ? "bot" : msg.role,
-        text: msg.text,
+      messages: messagesArray.map((m) => ({
+        role: m.role === "model" ? "bot" : m.role,
+        text: m.text,
       })),
     };
 
     try {
-      const res = await fetch("http://localhost:5000/api/chats", {
+      const res = await fetch(`${API_BASE}/api/chats`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        console.error("❌ Save error:", data);
-      }
+      if (!res.ok) console.error("❌ Save error:", await res.json());
     } catch (err) {
-      console.error("❌ Error saving chat to DB:", err);
+      console.error("❌ Error saving chat:", err);
     }
   };
 
-  // Handle user prompt
+  /* ---------- Handle submit ---------- */
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (!message.trim() || !chat) return;
+    if (!message.trim()) return;
 
-    const userMessage = { role: "user", text: message };
-    setChatLog((prev) => [...prev, userMessage]);
+    const userMsg = { role: "user", text: message };
+    setChatLog((prev) => [...prev, userMsg]);
     setShowChat(true);
     setMessage("");
     setLoading(true);
-
-    // ✅ Send user message to DB
-    await saveChatToDB([userMessage]);
+    await saveChatToDB([userMsg]);
 
     try {
-      const result = await chat.sendMessage(userMessage.text);
-      const response = result.response.text();
-      const botMessage = { role: "model", text: response };
+      const res = await fetch(`${API_BASE}/api/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: message }),
+      });
+      if (!res.ok) throw new Error(`Server error: ${res.statusText}`);
 
-      setChatLog((prev) => [...prev, botMessage]);
-
-      // ✅ Send bot message to DB
-      await saveChatToDB([userMessage, botMessage]);
-    } catch (error) {
-      console.error("Gemini Flash error:", error);
-      const errorMsg = "❌ Error getting response. Try again.";
-      const errorBotMsg = { role: "model", text: errorMsg };
+      const data = await res.json();
+      const botMsg = { role: "model", text: data.answer || "No response" };
+      setChatLog((prev) => [...prev, botMsg]);
+      await saveChatToDB([botMsg]);
+      // If you’d like to surface `data.context`, keep it here.
+    } catch (err) {
+      const errorBotMsg = { role: "model", text: "❌ Error. Try again." };
       setChatLog((prev) => [...prev, errorBotMsg]);
-
-      // ✅ Save error message
       await saveChatToDB([errorBotMsg]);
+      console.error("Chat error:", err);
     } finally {
       setLoading(false);
     }
   };
 
+  /* ---------- UI ---------- */
   return (
     <div className="hero-wrapper">
       <div className={`hero-content ${showChat ? "with-chat" : ""}`}>
         <img src={HeroImage} alt="Hero" className="hero-image" />
 
         {showChat && (
-          <div className="chat-window">
+          <div className="chat-window" ref={chatWindowRef}>
             {chatLog.map((msg, idx) => (
               <div key={idx} className={`chat-message ${msg.role}`}>
                 <span>{msg.text}</span>
@@ -144,16 +113,14 @@ const Hero = () => {
             placeholder="Ask your chatbot..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            disabled={loading}
           />
-          <button type="submit" disabled={loading || !chat}>
+          <button type="submit" disabled={loading || !message.trim()}>
             <FiSend size={20} />
           </button>
         </form>
       ) : (
-        <p
-          className="chatbot-login-warning"
-          style={{ textAlign: "center", marginTop: "20px", fontWeight: "bold" }}
-        >
+        <p className="chatbot-login-warning">
           🔒 Please{" "}
           <a href="/sign-in" style={{ color: "#2563eb" }}>
             sign in

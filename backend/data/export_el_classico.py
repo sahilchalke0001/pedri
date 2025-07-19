@@ -1,0 +1,36 @@
+import csv
+
+
+data = [
+    ["2025-05-11", "LaLiga", "Barcelona", "Real Madrid", "4-3", "Eric García 19', Yamal 32', Raphinha 34',45'", "Mbappé 5'(pen),14',70'", "Hansi Flick", "Carlo Ancelotti", "Barcelona"],
+    ["2025-04-26", "Copa del Rey Final", "Barcelona", "Real Madrid", "3-2", "Pedri 28', Ferran Torres 84', Koundé 116'", "Mbappé 70'(FK), Tchouaméni 77'", "Hansi Flick", "Carlo Ancelotti", "Barcelona"],
+    ["2025-01-12", "Supercopa Final", "Real Madrid", "Barcelona", "2-5", "Mbappé 5', Rodrygo 60'", "Yamal 22', Lewandowski 36'(pen), Raphinha 39',48', Balde 45'+10'", "Carlo Ancelotti", "Hansi Flick", "Barcelona"],
+    ["2024-10-26", "LaLiga", "Real Madrid", "Barcelona", "0-4", "", "Lewandowski 54',56', Yamal 77', Raphinha 84'", "Carlo Ancelotti", "Hansi Flick", "Barcelona"],
+    ["2024-04-21", "LaLiga", "Real Madrid", "Barcelona", "3-2", "Vinícius 18'(pen), Vázquez 73', Bellingham 90+1'", "Christensen 6', Fermín López 69'", "Carlo Ancelotti", "Xavi Hernández", "Real Madrid"],
+    ["2024-01-14", "Supercopa Final", "Real Madrid", "Barcelona", "4-1", "Vinícius (hat‑trick), Rodrygo", "Lewandowski", "Carlo Ancelotti", "Xavi Hernández", "Real Madrid"],
+    ["2023-10-28", "LaLiga", "Barcelona", "Real Madrid", "1-2", "", "Valverde, Rodrygo", "Xavi Hernández", "Carlo Ancelotti", "Real Madrid"],
+    ["2023-04-05", "Copa del Rey Semi", "Barcelona", "Real Madrid", "0-4", "", "Vinícius, Benzema (hat‑trick)", "Xavi Hernández", "Carlo Ancelotti", "Real Madrid"],
+    ["2023-03-19", "LaLiga", "Barcelona", "Real Madrid", "2-1", "Ferran 17', Lewandowski 89'", "Ramos", "Xavi Hernández", "Carlo Ancelotti", "Barcelona"],
+    ["2023-03-02", "Copa del Rey Semi", "Real Madrid", "Barcelona", "0-1", "", "Lewandowski", "Carlo Ancelotti", "Xavi Hernández", "Barcelona"],
+    ["2023-01-15", "Supercopa Final", "Real Madrid", "Barcelona", "1-3", "Rodrygo", "Lewandowski, Busquets", "Carlo Ancelotti", "Xavi Hernández", "Barcelona"],
+    ["2022-10-16", "LaLiga", "Real Madrid", "Barcelona", "3-1", "Benzema, Vinícius, Kroos", "Lewandowski", "Carlo Ancelotti", "Xavi Hernández", "Real Madrid"],
+    ["2022-03-20", "LaLiga", "Real Madrid", "Barcelona", "0-4", "", "Aubameyang (2), Araujo, Ferran Torres", "Carlo Ancelotti", "Xavi Hernández", "Barcelona"],
+    ["2022-01-12", "Supercopa Semi", "Barcelona", "Real Madrid", "2-3", "Luuk de Jong, Fati", "Vinícius, Benzema, Valverde", "Xavi Hernández", "Carlo Ancelotti", "Real Madrid"],
+    ["2021-10-24", "LaLiga", "Barcelona", "Real Madrid", "1-2", "Agüero", "Alaba, Vázquez", "Ronald Koeman", "Carlo Ancelotti", "Real Madrid"],
+    ["2021-04-10", "LaLiga", "Real Madrid", "Barcelona", "2-1", "Benzema, Kroos", "Mingueza", "Zinedine Zidane", "Ronald Koeman", "Real Madrid"],
+    ["2020-10-24", "LaLiga", "Barcelona", "Real Madrid", "1-3", "Fati", "Valverde, Ramos (pen), Modrić", "Ronald Koeman", "Zinedine Zidane", "Real Madrid"],
+    ["2020-03-01", "LaLiga", "Real Madrid", "Barcelona", "2-0", "Vinícius, Mariano", "", "Zinedine Zidane", "Quique Setién", "Real Madrid"],
+    ["2019-12-18", "LaLiga", "Barcelona", "Real Madrid", "0-0", "", "", "Ernesto Valverde", "Zinedine Zidane", "Draw"],
+    ["2019-03-02", "LaLiga", "Real Madrid", "Barcelona", "0-1", "", "Rakitic", "Santiago Solari", "Ernesto Valverde", "Barcelona"]
+]
+
+# Define the CSV column headers
+headers = ["Date", "Competition", "Home", "Away", "Score", "Scorers_Home", "Scorers_Away", "Coach_Home", "Coach_Away", "Winner"]
+
+# Write the CSV
+with open("el_clasico_matches.csv", mode="w", encoding="utf-8", newline="") as file:
+    writer = csv.writer(file)
+    writer.writerow(headers)  # Write header
+    writer.writerows(data)    # Write rows
+
+print("CSV file 'el_clasico_matches.csv' created successfully.")
