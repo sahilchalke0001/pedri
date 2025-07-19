@@ -10,7 +10,7 @@ youtube-transcript-api
 flask
 flask-cors 
 python-dotenv 
-pymongo
+
 langchain 
 google-generativeai 
 langchain-google-genai 
@@ -18,3 +18,5 @@ chromadb
 gunicorn
 
 langchain-chroma
+pymongo==4.6.1
+dnspython==2.4.2
